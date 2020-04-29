@@ -126,17 +126,19 @@ export default function Form({ setPost, post }) {
           <option value="ticketbooth">Ticket Booth</option>
           <option value="vendor">Vendor</option>
         </Input>
-        {errors.jobs.value == '' ? (
+        {errors.jobs.value === "" && errors.jobs.value ? (
           <Alert color="warning">{errors.jobs}</Alert>) : null}
       </FormGroup>
 
       <FormGroup check>
         <Input type="checkbox" name="tos" id="tos" onChange={inputChange} checked={formState.tos} />
         <Label for="tos" check>Terms &amp; Conditions</Label>
-        {errors.tos === true ? (
+        {errors.tos ? (
           <Alert color="warning">{errors.tos}</Alert>) : null}
       </FormGroup>
-      <Button color="primary" disabled={isButtonDisabled} style={{ marginTop: '20px', width: '110px' }}>Sign Up</Button>
+      <Button color="primary" style={{ marginTop: '20px', width: '110px' }}>Sign Up</Button>
+
+      {/* disabled={isButtonDisabled}  */}
     </ReactForm>
   )
 }
