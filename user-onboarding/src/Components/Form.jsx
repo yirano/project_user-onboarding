@@ -34,20 +34,20 @@ export default function Form({ setPost, post }) {
 
   const validateChange = e => {
     yup
-      .reach(formSchema, e.target.name)
-      .validate(e.target.value)
+      .reach(formSchema, e.target.name, e.target.type)
+      .validate(e.target.type !== 'checkbox' ? e.target.value : e.target.checked)
       .then(valid => {
-        setErrors({ ...errors, [e.targetname]: "" })
+        setErrors({ ...errors, [e.target.name]: "" })
       })
       .catch(err => {
-        // console.log("Error", err)
+        console.log("Form -> err", err)
         setErrors({ ...errors, [e.target.name]: err.errors[0] })
       })
   }
 
   useEffect(() => {
     formSchema.isValid(formState).then(valid => {
-      // console.log("Valid", valid);
+      console.log("Form -> valid", valid)
       setButtonDisabled(!valid);
     })
   }, [formState])
@@ -58,7 +58,7 @@ export default function Form({ setPost, post }) {
     axios
       .post('https://reqres.in/api/users', formState)
       .then(res => {
-        // console.log(res.data);
+        console.log("Form -> res", res.data)
         setPost([...post, res.data])
         setFormState({
           name: '',
@@ -83,9 +83,14 @@ export default function Form({ setPost, post }) {
         e.target.type === 'checkbox' ? e.target.checked : e.target.value
     }
 
+    console.log('checked', e.target.checked);
+    console.log('value', e.target.value);
+
     validateChange(e);
     setFormState(newFormData)
   }
+
+  console.log(formState);
 
   return (
     <ReactForm style={{ padding: '90px' }} onSubmit={formSubmit}>
@@ -93,6 +98,7 @@ export default function Form({ setPost, post }) {
         <Label for="name">Name</Label>
         <Input type="text" name="name" id="name" placeholder="John Jacob" onChange={inputChange} value={formState.name} />
         {errors.name.length > 0 ? <Alert color="warning">{errors.name}</Alert> : null}
+        {/* {errors.name && touched.name ? (<Alert color="warning">{errors.name}</Alert>) : null} */}
       </FormGroup>
       <Row form>
         <Col md={6}>
@@ -127,6 +133,8 @@ export default function Form({ setPost, post }) {
       <FormGroup check>
         <Input type="checkbox" name="tos" id="tos" onChange={inputChange} checked={formState.tos} />
         <Label for="tos" check>Terms &amp; Conditions</Label>
+        {errors.tos === true ? (
+          <Alert color="warning">{errors.tos}</Alert>) : null}
       </FormGroup>
       <Button color="primary" disabled={isButtonDisabled} style={{ marginTop: '20px', width: '110px' }}>Sign Up</Button>
     </ReactForm>
