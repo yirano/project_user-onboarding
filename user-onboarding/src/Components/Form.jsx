@@ -33,15 +33,16 @@ export default function Form({ setPost, post }) {
   })
 
   const validateChange = e => {
+    const name = e.target.name
     yup
       .reach(formSchema, e.target.name, e.target.type)
-      .validate(e.target.type !== 'checkbox' ? e.target.value : e.target.checked)
+      .validate(e.target.name !== 'tos' ? e.target.value : e.target.checked)
       .then(valid => {
         setErrors({ ...errors, [e.target.name]: "" })
       })
       .catch(err => {
         console.log("Form -> err", err)
-        setErrors({ ...errors, [e.target.name]: err.errors[0] })
+        setErrors({ ...errors, [name]: err.errors })
       })
   }
 
@@ -80,7 +81,7 @@ export default function Form({ setPost, post }) {
     const newFormData = {
       ...formState,
       [e.target.name]:
-        e.target.type === 'checkbox' ? e.target.checked : e.target.value
+        e.target.name === 'tos' ? e.target.checked : e.target.value
     }
 
     console.log('checked', e.target.checked);
@@ -96,31 +97,31 @@ export default function Form({ setPost, post }) {
     <ReactForm style={{ padding: '90px' }} onSubmit={formSubmit}>
       <FormGroup>
         <Label for="name">Name</Label>
-        <Input type="text" name="name" id="name" placeholder="John Jacob" onChange={inputChange} value={formState.name} />
-        {errors.name.length > 0 ? <Alert color="warning">{errors.name}</Alert> : null}
+        <Input type="text" name="name" id="name" placeholder="John Jacob" onBlur={e=>validateChange(e)} onChange={inputChange} value={formState.name} />
+        {errors.name  ? <Alert color="warning">{errors.name}</Alert> : null}
         {/* {errors.name && touched.name ? (<Alert color="warning">{errors.name}</Alert>) : null} */}
       </FormGroup>
       <Row form>
         <Col md={6}>
           <FormGroup>
             <Label for="email">Email</Label>
-            <Input type="email" name="email" id="email" placeholder="email@email.com" onChange={inputChange} value={formState.email} />
-            {errors.email.length > 0 ? (
+            <Input type="email" name="email" id="email" placeholder="email@email.com"  onBlur={e=>validateChange(e)} onChange={inputChange} value={formState.email} />
+            {errors.email ? (
               <Alert color="warning">{errors.email}</Alert>) : null}
           </FormGroup>
         </Col>
         <Col md={6}>
           <FormGroup>
             <Label for="password">Password</Label>
-            <Input type="password" name="password" id="password" placeholder="Create a Password" onChange={inputChange} value={formState.password} />
-            {errors.password.length > 0 ? (
+            <Input type="password" name="password" id="password" placeholder="Create a Password" onBlur={e=>validateChange(e)} onChange={inputChange} value={formState.password} />
+            {errors.password? (
               <Alert color="warning">{errors.password}</Alert>) : null}
           </FormGroup>
         </Col>
       </Row>
       <FormGroup>
         <Label for="jobs">Jobs</Label>
-        <Input type="select" name="jobs" id="jobs" onChange={inputChange} value={formState.jobs}>
+        <Input type="select" name="jobs" id="jobs" onBlur={e=>validateChange(e)} onChange={inputChange} value={formState.jobs}>
           <option value="" disable>--Please select a job--</option>
           <option value="photographer">Photographer</option>
           <option value="ticketbooth">Ticket Booth</option>
