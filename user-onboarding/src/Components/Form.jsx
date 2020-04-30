@@ -15,9 +15,8 @@ export default function Form({ setPost, post }) {
 
   const [serverError, setServerError] = useState('')
   const [formState, setFormState] = useState(initialFormState);
-
+  const [formValid, setFormValid] = useState(false)
   const [isButtonDisabled, setButtonDisabled] = useState(true)
-
   const [errors, setErrors] = useState(initialFormState)
 
   // schema is used for all validation to determine whether the input is valid or not
@@ -50,7 +49,11 @@ export default function Form({ setPost, post }) {
     formSchema.isValid(formState).then(valid => {
       console.log("Form -> valid", valid)
       setButtonDisabled(!valid);
+      setFormValid(valid)
+
+      console.log('Form is VALID', valid)
     })
+
   }, [formState])
 
   const formSubmit = e => {
@@ -94,11 +97,11 @@ export default function Form({ setPost, post }) {
   console.log('serverError', serverError);
 
   return (
-    <ReactForm style={{ padding: '90px' }} onSubmit={formSubmit}>
+    <ReactForm style={{ padding: '90px' }} onSubmit={formValid ? formSubmit : e=>e.preventDefault()}>
       <FormGroup>
         <Label for="name">Name</Label>
         <Input type="text" name="name" id="name" placeholder="John Jacob" onBlur={e=>validateChange(e)} onChange={inputChange} value={formState.name} />
-        {errors.name  ? <Alert color="warning">{errors.name}</Alert> : null}
+        {errors.name  ?  <Alert color="warning">{errors.name}</Alert> : null}
         {/* {errors.name && touched.name ? (<Alert color="warning">{errors.name}</Alert>) : null} */}
       </FormGroup>
       <Row form>
@@ -106,7 +109,7 @@ export default function Form({ setPost, post }) {
           <FormGroup>
             <Label for="email">Email</Label>
             <Input type="email" name="email" id="email" placeholder="email@email.com"  onBlur={e=>validateChange(e)} onChange={inputChange} value={formState.email} />
-            {errors.email ? (
+            {errors.email  ? (
               <Alert color="warning">{errors.email}</Alert>) : null}
           </FormGroup>
         </Col>
@@ -114,7 +117,7 @@ export default function Form({ setPost, post }) {
           <FormGroup>
             <Label for="password">Password</Label>
             <Input type="password" name="password" id="password" placeholder="Create a Password" onBlur={e=>validateChange(e)} onChange={inputChange} value={formState.password} />
-            {errors.password? (
+            {errors.password ? (
               <Alert color="warning">{errors.password}</Alert>) : null}
           </FormGroup>
         </Col>
@@ -137,7 +140,7 @@ export default function Form({ setPost, post }) {
         {errors.tos ? (
           <Alert color="warning">{errors.tos}</Alert>) : null}
       </FormGroup>
-      <Button color="primary" disabled={isButtonDisabled} style={{ marginTop: '20px', width: '110px' }}>Sign Up</Button>
+      <Button color="primary" type="submit" style={{ marginTop: '20px', width: '110px' }}>Sign Up</Button>
 
       {/* disabled={isButtonDisabled}  */}
     </ReactForm>
