@@ -182,7 +182,9 @@ export default function Form({ setPost, post }) {
         {errors.tos ? (
           <Alert color="warning">{errors.tos}</Alert>) : null}
       </FormGroup>
-      <Button color="primary" type="submit" style={{ marginTop: '20px', width: '110px' }} data-cy="submit">Sign Up</Button>
+      <Button color="primary" type="submit" style={{ marginTop: '20px', width: '110px' }} data-cy="submit"
+        disabled={isButtonDisabled}
+      >Sign Up</Button>
 
       {/* disabled={isButtonDisabled}  */}
     </ReactForm>
